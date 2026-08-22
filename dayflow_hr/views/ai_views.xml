@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<odoo>
+
+    <record id="view_dayflow_ai_insight_list" model="ir.ui.view">
+        <field name="name">dayflow.ai.insight.list</field>
+        <field name="model">dayflow.ai.insight</field>
+        <field name="arch" type="xml">
+
+            <list string="HR Action Center">
+
+                <field name="name"/>
+                <field name="insight_type"/>
+                <field name="severity"/>
+                <field name="employee_id"/>
+                <field name="status"/>
+                <field name="source"/>
+
+            </list>
+
+        </field>
+    </record>
+
+
+    <record id="view_dayflow_ai_insight_form" model="ir.ui.view">
+        <field name="name">dayflow.ai.insight.form</field>
+        <field name="model">dayflow.ai.insight</field>
+        <field name="arch" type="xml">
+
+            <form string="HR Insight">
+
+                <sheet>
+
+                    <group>
+
+                        <field name="name"/>
+                        <field name="insight_type"/>
+                        <field name="severity"/>
+                        <field name="employee_id"/>
+                        <field name="department"/>
+                        <field name="status"/>
+                        <field name="source"/>
+
+                    </group>
+
+                    <group>
+
+                        <field name="message"/>
+
+                    </group>
+
+                </sheet>
+
+            </form>
+
+        </field>
+    </record>
+
+
+    <record id="action_dayflow_ai_insights" model="ir.actions.act_window">
+
+        <field name="name">Action Center</field>
+
+        <field name="res_model">dayflow.ai.insight</field>
+
+        <field name="view_mode">list,form</field>
+
+    </record>
+
+
+    <menuitem
+        id="menu_dayflow_ai_root"
+        name="Dayflow AI"
+        sequence="50"
+    />
+
+    <menuitem
+        id="menu_dayflow_ai_action_center"
+        name="Action Center"
+        parent="menu_dayflow_ai_root"
+        action="action_dayflow_ai_insights"
+        sequence="10"
+    />
+
+</odoo>
