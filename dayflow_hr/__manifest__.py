@@ -10,6 +10,7 @@
     ],
 
     "data": [
+        "security/ir.model.access.csv",
         "views/ai_views.xml",
     ],
 

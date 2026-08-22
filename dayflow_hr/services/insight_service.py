@@ -1,4 +1,4 @@
-from odoo import api, SUPERUSER_ID
+from odoo import models
 
 
 def create_insight_records(env, insights):
