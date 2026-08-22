@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Employee List -->
+    <record id="view_dayflow_employee_list" model="ir.ui.view">
+        <field name="name">dayflow.employee.list</field>
+        <field name="model">dayflow.employee</field>
+        <field name="arch" type="xml">
+            <list string="Employees">
+                <field name="employee_id"/>
+                <field name="name"/>
+                <field name="job_title"/>
+                <field name="department"/>
+                <field name="email"/>
+                <field name="role"/>
+                <field name="employment_status"/>
+                <field name="active"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Employee Form -->
+    <record id="view_dayflow_employee_form" model="ir.ui.view">
+        <field name="name">dayflow.employee.form</field>
+        <field name="model">dayflow.employee</field>
+        <field name="arch" type="xml">
+            <form string="Employee">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="profile_picture" widget="image"/>
+                            <field name="name"/>
+                            <field name="employee_id"/>
+                            <field name="user_id"/>
+                        </group>
+
+                        <group>
+                            <field name="email"/>
+                            <field name="phone"/>
+                            <field name="address"/>
+                        </group>
+                    </group>
+
+                    <group string="Job Details">
+                        <field name="job_title"/>
+                        <field name="department"/>
+                        <field name="joining_date"/>
+                        <field name="role"/>
+                        <field name="employment_status"/>
+                    </group>
+
+                    <group string="Salary">
+                        <field name="salary"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Employee Action -->
+    <record id="action_dayflow_employee" model="ir.actions.act_window">
+        <field name="name">Employees</field>
+        <field name="res_model">dayflow.employee</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <!-- User Management List -->
+    <record id="view_dayflow_user_management_list" model="ir.ui.view">
+        <field name="name">dayflow.user.management.list</field>
+        <field name="model">dayflow.user.management</field>
+        <field name="arch" type="xml">
+            <list string="User Management">
+                <field name="user_id"/>
+                <field name="employee_id"/>
+                <field name="role"/>
+                <field name="active"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- User Management Form -->
+    <record id="view_dayflow_user_management_form" model="ir.ui.view">
+        <field name="name">dayflow.user.management.form</field>
+        <field name="model">dayflow.user.management</field>
+        <field name="arch" type="xml">
+            <form string="User Management">
+                <sheet>
+                    <group>
+                        <field name="user_id"/>
+                        <field name="employee_id"/>
+                        <field name="role"/>
+                        <field name="active"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- User Management Action -->
+    <record id="action_dayflow_user_management" model="ir.actions.act_window">
+        <field name="name">User Management</field>
+        <field name="res_model">dayflow.user.management</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <!-- Dayflow Menu -->
+    <menuitem
+        id="menu_dayflow_root"
+        name="Dayflow"
+        sequence="10"
+    />
+
+    <menuitem
+        id="menu_dayflow_employee"
+        name="Employees"
+        parent="menu_dayflow_root"
+        action="action_dayflow_employee"
+        sequence="10"
+    />
+
+    <menuitem
+        id="menu_dayflow_user_management"
+        name="User Management"
+        parent="menu_dayflow_root"
+        action="action_dayflow_user_management"
+        sequence="20"
+    />
+
+</odoo>

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- 1. The Form View (For editing a single payroll record) -->
+    <record id="view_dayflow_payroll_form" model="ir.ui.view">
+        <field name="name">dayflow.payroll.form</field>
+        <field name="model">dayflow.payroll</field>
+        <field name="arch" type="xml">
+            <form string="Payroll Record">
+                <header>
+                    <field name="status" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="employee_id"/>
+                            <field name="month"/>
+                        </group>
+                        <group>
+                            <field name="basic_salary"/>
+                            <field name="allowances"/>
+                            <field name="deductions"/>
+                            <field name="net_salary" readonly="1"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- 2. The Tree View (For listing all payrolls) -->
+    <record id="view_dayflow_payroll_tree" model="ir.ui.view">
+        <field name="name">dayflow.payroll.tree</field>
+        <field name="model">dayflow.payroll</field>
+        <field name="arch" type="xml">
+            <tree string="Payroll Records">
+                <field name="employee_id"/>
+                <field name="month"/>
+                <field name="net_salary"/>
+                <field name="status" widget="badge" decoration-success="status == 'paid'"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- 3. The Menu Action (To open the views) -->
+    <record id="action_dayflow_payroll" model="ir.actions.act_window">
+        <field name="name">Payroll</field>
+        <field name="res_model">dayflow.payroll</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+</odoo>
