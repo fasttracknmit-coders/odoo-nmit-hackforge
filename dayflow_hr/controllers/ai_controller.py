@@ -1,6 +1,8 @@
 from odoo import http
 from odoo.http import request
 
+from ..services.gemini_service import generate_hr_explanation
+
 
 class DayflowAIController(http.Controller):
 
@@ -15,7 +17,7 @@ class DayflowAIController(http.Controller):
         if not message:
             return {
                 "success": False,
-                "reply": "Please enter a question."
+                "reply": "Please enter a question.",
             }
 
         message = message.lower().strip()
@@ -29,109 +31,109 @@ class DayflowAIController(http.Controller):
             "check-in",
             "checkin",
         ]):
-            records = Insight.search(
-                [
-                    ("insight_type", "=", "attendance"),
-                    ("status", "=", "open"),
-                ],
-                limit=10,
-            )
+            records = Insight.search([
+                ("insight_type", "=", "attendance"),
+                ("status", "=", "open"),
+            ], limit=10)
 
             if not records:
-                reply = "No open attendance issues were found."
+                return {
+                    "success": True,
+                    "reply": "No open attendance issues were found.",
+                }
 
-            else:
-                lines = [
-                    f"Found {len(records)} attendance issue(s):"
-                ]
+            lines = [
+                f"Found {len(records)} attendance issue(s):"
+            ]
 
-                for record in records:
-                    employee = (
-                        record.employee_id.name
-                        if record.employee_id
-                        else "Unknown employee"
-                    )
+            for record in records:
+                employee = (
+                    record.employee_id.name
+                    if record.employee_id
+                    else "Unknown employee"
+                )
 
-                    lines.append(
-                        f"- {record.name}: "
-                        f"{employee} — "
-                        f"{record.severity.upper()}"
-                    )
+                lines.append(
+                    f"- {record.name}: {employee} - "
+                    f"{record.severity.upper()}"
+                )
 
-                reply = "\n".join(lines)
+            raw_insight = "\n".join(lines)
+
+            ai_reply = generate_hr_explanation(raw_insight)
 
             return {
                 "success": True,
-                "reply": reply,
+                "reply": ai_reply,
             }
 
         # Leave questions
         if "leave" in message or "holiday" in message:
-            records = Insight.search(
-                [
-                    ("insight_type", "=", "leave"),
-                    ("status", "=", "open"),
-                ],
-                limit=10,
-            )
+            records = Insight.search([
+                ("insight_type", "=", "leave"),
+                ("status", "=", "open"),
+            ], limit=10)
 
             if not records:
-                reply = "No open leave conflicts were found."
+                return {
+                    "success": True,
+                    "reply": "No open leave conflicts were found.",
+                }
 
-            else:
-                lines = [
-                    f"Found {len(records)} leave issue(s):"
-                ]
+            lines = [
+                f"Found {len(records)} leave issue(s):"
+            ]
 
-                for record in records:
-                    lines.append(
-                        f"- {record.name}: "
-                        f"{record.message}"
-                    )
+            for record in records:
+                lines.append(
+                    f"- {record.name}: {record.message}"
+                )
 
-                reply = "\n".join(lines)
+            raw_insight = "\n".join(lines)
+
+            ai_reply = generate_hr_explanation(raw_insight)
 
             return {
                 "success": True,
-                "reply": reply,
+                "reply": ai_reply,
             }
 
         # Payroll questions
         if "payroll" in message or "salary" in message:
-            records = Insight.search(
-                [
-                    ("insight_type", "=", "payroll"),
-                    ("status", "=", "open"),
-                ],
-                limit=10,
-            )
+            records = Insight.search([
+                ("insight_type", "=", "payroll"),
+                ("status", "=", "open"),
+            ], limit=10)
 
             if not records:
-                reply = "No open payroll risks were found."
+                return {
+                    "success": True,
+                    "reply": "No open payroll risks were found.",
+                }
 
-            else:
-                lines = [
-                    f"Found {len(records)} payroll issue(s):"
-                ]
+            lines = [
+                f"Found {len(records)} payroll issue(s):"
+            ]
 
-                for record in records:
-                    employee = (
-                        record.employee_id.name
-                        if record.employee_id
-                        else "Unknown employee"
-                    )
+            for record in records:
+                employee = (
+                    record.employee_id.name
+                    if record.employee_id
+                    else "Unknown employee"
+                )
 
-                    lines.append(
-                        f"- {record.name}: "
-                        f"{employee} — "
-                        f"{record.severity.upper()}"
-                    )
+                lines.append(
+                    f"- {record.name}: {employee} - "
+                    f"{record.severity.upper()}"
+                )
 
-                reply = "\n".join(lines)
+            raw_insight = "\n".join(lines)
+
+            ai_reply = generate_hr_explanation(raw_insight)
 
             return {
                 "success": True,
-                "reply": reply,
+                "reply": ai_reply,
             }
 
         # General HR summary
@@ -142,50 +144,51 @@ class DayflowAIController(http.Controller):
             "insights",
             "report",
         ]):
-            records = Insight.search(
-                [
-                    ("status", "=", "open"),
-                ],
-                limit=20,
-            )
+            records = Insight.search([
+                ("status", "=", "open"),
+            ], limit=20)
 
             if not records:
-                reply = "There are currently no open HR issues."
+                return {
+                    "success": True,
+                    "reply": "There are currently no open HR issues.",
+                }
 
-            else:
-                attendance = sum(
-                    1 for r in records
-                    if r.insight_type == "attendance"
-                )
+            attendance = sum(
+                1 for r in records
+                if r.insight_type == "attendance"
+            )
 
-                leave = sum(
-                    1 for r in records
-                    if r.insight_type == "leave"
-                )
+            leave = sum(
+                1 for r in records
+                if r.insight_type == "leave"
+            )
 
-                payroll = sum(
-                    1 for r in records
-                    if r.insight_type == "payroll"
-                )
+            payroll = sum(
+                1 for r in records
+                if r.insight_type == "payroll"
+            )
 
-                reply = (
-                    "HR Action Center summary:\n"
-                    f"- Attendance issues: {attendance}\n"
-                    f"- Leave issues: {leave}\n"
-                    f"- Payroll issues: {payroll}\n"
-                    f"- Total open issues: {len(records)}"
-                )
+            raw_insight = (
+                "HR Action Center summary:\n"
+                f"- Attendance issues: {attendance}\n"
+                f"- Leave issues: {leave}\n"
+                f"- Payroll issues: {payroll}\n"
+                f"- Total open issues: {len(records)}"
+            )
+
+            ai_reply = generate_hr_explanation(raw_insight)
 
             return {
                 "success": True,
-                "reply": reply,
+                "reply": ai_reply,
             }
 
         return {
             "success": True,
             "reply": (
                 "I can help with HR insights. "
-                "Try asking about attendance, "
-                "leave, payroll, or give me an HR summary."
+                "Try asking about attendance, leave, "
+                "payroll, or give me an HR summary."
             ),
         }
