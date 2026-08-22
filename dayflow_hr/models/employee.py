@@ -12,6 +12,11 @@ class DayflowEmployee(models.Model):
             "unique(employee_id)",
             "Employee ID must be unique.",
         ),
+        (
+            "unique_user_id",
+            "unique(user_id)",
+            "Each user account can be assigned to only one employee.",
+        ),
     ]
 
     name = fields.Char(string="Employee Name", required=True)
@@ -43,5 +48,15 @@ class DayflowEmployee(models.Model):
         string="Role",
         required=True,
         default="employee",
+    )
+    employment_status = fields.Selection(
+        [
+            ("active", "Active"),
+            ("on_leave", "On Leave"),
+            ("inactive", "Inactive"),
+        ],
+        string="Employment Status",
+        required=True,
+        default="active",
     )
     active = fields.Boolean(string="Active", default=True)
