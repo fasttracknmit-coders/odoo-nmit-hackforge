@@ -17,3 +17,10 @@
     "installable": True,
     "application": True,
 }
+'data': [
+        'security/ir.model.access.csv',
+        'security/security.xml',
+        'views/employee_views.xml',
+        'views/payroll_views.xml',
+        'reports/payroll_report.xml',  # <--- Add this line here
+    ],

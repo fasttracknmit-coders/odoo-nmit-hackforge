@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- QWeb PDF Template -->
+    <template id="report_payroll_document">
+        <t t-call="web.external_layout">
+            <t t-foreach="docs" t-as="o">
+                <div class="page">
+                    <div class="oe_structure"/>
+                    <h2 class="mt-4">Employee Payslip</h2>
+                    
+                    <div class="row mt-4 mb-4">
+                        <div class="col-6">
+                            <strong>Employee:</strong> <span t-field="o.employee_id.name"/><br/>
+                            <strong>Month/Year:</strong> <span t-field="o.month"/><br/>
+                        </div>
+                        <div class="col-6 text-end">
+                            <strong>Status:</strong> <span t-field="o.status"/><br/>
+                        </div>
+                    </div>
+
+                    <table class="table table-sm o_main_table mt-4">
+                        <thead>
+                            <tr>
+                                <th>Description</th>
+                                <th class="text-end">Amount</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Basic Salary</strong></td>
+                                <td class="text-end"><span t-field="o.basic_salary"/></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Allowances</strong></td>
+                                <td class="text-end"><span t-field="o.allowances"/></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Deductions</strong></td>
+                                <td class="text-end"><span t-field="o.deductions"/></td>
+                            </tr>
+                            <tr class="border-black">
+                                <td><strong>Net Salary</strong></td>
+                                <td class="text-end"><strong><span t-field="o.net_salary"/></strong></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    
+                    <div class="oe_structure"/>
+                </div>
+            </t>
+        </t>
+    </template>
+
+    <!-- Report Action Definition -->
+    <record id="action_report_payroll_slip" model="ir.actions.report">
+        <field name="name">Print Payslip</field>
+        <field name="model">dayflow.payroll</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">dayflow_hr.report_payroll_document</field>
+        <field name="report_file">dayflow_hr.report_payroll_document</field>
+        <field name="binding_model_id" ref="model_dayflow_payroll"/>
+        <field name="binding_type">report</field>
+    </record>
+</odoo>
