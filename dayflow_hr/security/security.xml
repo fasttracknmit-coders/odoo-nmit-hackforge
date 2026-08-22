@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Employee Role -->
+    <record id="group_dayflow_employee" model="res.groups">
+        <field name="name">Dayflow Employee</field>
+    </record>
+
+    <!-- HR Officer Role -->
+    <record id="group_dayflow_hr" model="res.groups">
+        <field name="name">Dayflow HR Officer</field>
+        <field name="implied_ids" eval="[(4, ref('group_dayflow_employee'))]"/>
+    </record>
+
+    <!-- Admin Role -->
+    <record id="group_dayflow_admin" model="res.groups">
+        <field name="name">Dayflow Admin</field>
+        <field name="implied_ids" eval="[(4, ref('group_dayflow_hr'))]"/>
+    </record>
+
+</odoo>

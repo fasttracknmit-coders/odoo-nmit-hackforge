@@ -1,0 +1,4 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_dayflow_employee_user,dayflow.employee.user,model_dayflow_employee,dayflow_hr.group_dayflow_employee,1,0,0,0
+access_dayflow_employee_hr,dayflow.employee.hr,model_dayflow_employee,dayflow_hr.group_dayflow_hr,1,1,1,0
+access_dayflow_employee_admin,dayflow.employee.admin,model_dayflow_employee,dayflow_hr.group_dayflow_admin,1,1,1,1
