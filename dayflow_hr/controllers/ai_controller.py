@@ -2,9 +2,35 @@ from odoo import http
 from odoo.http import request
 
 from ..services.gemini_service import generate_hr_explanation
+from ..services.hr_intelligence_service import run_hr_intelligence
 
 
 class DayflowAIController(http.Controller):
+
+    @http.route(
+        "/dayflow/ai/generate",
+        type="json",
+        auth="user",
+        methods=["POST"],
+    )
+    def generate_insights(self, **kwargs):
+        try:
+            records = run_hr_intelligence(request.env)
+
+            return {
+                "success": True,
+                "count": len(records),
+                "message": (
+                    f"Generated {len(records)} HR insight(s)."
+                ),
+            }
+
+        except Exception as error:
+            return {
+                "success": False,
+                "count": 0,
+                "message": str(error),
+            }
 
     @http.route(
         "/dayflow/ai/chat",
@@ -24,17 +50,26 @@ class DayflowAIController(http.Controller):
 
         Insight = request.env["dayflow.ai.insight"]
 
+        # ---------------------------------------------------------
         # Attendance questions
-        if any(word in message for word in [
-            "attendance",
-            "late",
-            "check-in",
-            "checkin",
-        ]):
-            records = Insight.search([
-                ("insight_type", "=", "attendance"),
-                ("status", "=", "open"),
-            ], limit=10)
+        # ---------------------------------------------------------
+
+        if any(
+            word in message
+            for word in [
+                "attendance",
+                "late",
+                "check-in",
+                "checkin",
+            ]
+        ):
+            records = Insight.search(
+                [
+                    ("insight_type", "=", "attendance"),
+                    ("status", "=", "open"),
+                ],
+                limit=10,
+            )
 
             if not records:
                 return {
@@ -59,7 +94,6 @@ class DayflowAIController(http.Controller):
                 )
 
             raw_insight = "\n".join(lines)
-
             ai_reply = generate_hr_explanation(raw_insight)
 
             return {
@@ -67,12 +101,18 @@ class DayflowAIController(http.Controller):
                 "reply": ai_reply,
             }
 
+        # ---------------------------------------------------------
         # Leave questions
+        # ---------------------------------------------------------
+
         if "leave" in message or "holiday" in message:
-            records = Insight.search([
-                ("insight_type", "=", "leave"),
-                ("status", "=", "open"),
-            ], limit=10)
+            records = Insight.search(
+                [
+                    ("insight_type", "=", "leave"),
+                    ("status", "=", "open"),
+                ],
+                limit=10,
+            )
 
             if not records:
                 return {
@@ -90,7 +130,6 @@ class DayflowAIController(http.Controller):
                 )
 
             raw_insight = "\n".join(lines)
-
             ai_reply = generate_hr_explanation(raw_insight)
 
             return {
@@ -98,12 +137,18 @@ class DayflowAIController(http.Controller):
                 "reply": ai_reply,
             }
 
+        # ---------------------------------------------------------
         # Payroll questions
+        # ---------------------------------------------------------
+
         if "payroll" in message or "salary" in message:
-            records = Insight.search([
-                ("insight_type", "=", "payroll"),
-                ("status", "=", "open"),
-            ], limit=10)
+            records = Insight.search(
+                [
+                    ("insight_type", "=", "payroll"),
+                    ("status", "=", "open"),
+                ],
+                limit=10,
+            )
 
             if not records:
                 return {
@@ -128,7 +173,6 @@ class DayflowAIController(http.Controller):
                 )
 
             raw_insight = "\n".join(lines)
-
             ai_reply = generate_hr_explanation(raw_insight)
 
             return {
@@ -136,17 +180,26 @@ class DayflowAIController(http.Controller):
                 "reply": ai_reply,
             }
 
+        # ---------------------------------------------------------
         # General HR summary
-        if any(word in message for word in [
-            "summary",
-            "problem",
-            "issues",
-            "insights",
-            "report",
-        ]):
-            records = Insight.search([
-                ("status", "=", "open"),
-            ], limit=20)
+        # ---------------------------------------------------------
+
+        if any(
+            word in message
+            for word in [
+                "summary",
+                "problem",
+                "issues",
+                "insights",
+                "report",
+            ]
+        ):
+            records = Insight.search(
+                [
+                    ("status", "=", "open"),
+                ],
+                limit=20,
+            )
 
             if not records:
                 return {
@@ -155,18 +208,21 @@ class DayflowAIController(http.Controller):
                 }
 
             attendance = sum(
-                1 for r in records
-                if r.insight_type == "attendance"
+                1
+                for record in records
+                if record.insight_type == "attendance"
             )
 
             leave = sum(
-                1 for r in records
-                if r.insight_type == "leave"
+                1
+                for record in records
+                if record.insight_type == "leave"
             )
 
             payroll = sum(
-                1 for r in records
-                if r.insight_type == "payroll"
+                1
+                for record in records
+                if record.insight_type == "payroll"
             )
 
             raw_insight = (
