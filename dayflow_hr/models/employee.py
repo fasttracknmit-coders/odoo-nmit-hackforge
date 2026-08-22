@@ -6,11 +6,20 @@ class DayflowEmployee(models.Model):
     _description = "Dayflow Employee"
     _rec_name = "name"
 
+    _sql_constraints = [
+        (
+            "unique_employee_id",
+            "unique(employee_id)",
+            "Employee ID must be unique.",
+        ),
+    ]
+
     name = fields.Char(string="Employee Name", required=True)
     employee_id = fields.Char(
         string="Employee ID",
         required=True,
         copy=False,
+        index=True,
     )
     user_id = fields.Many2one(
         "res.users",
