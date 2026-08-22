@@ -30,3 +30,10 @@
     "application": True,
 >>>>>>> ec9e89a38d1184d5790d5284a1b16a1daafc9be8
 }
+'data': [
+        'security/ir.model.access.csv',
+        'security/security.xml',
+        'views/employee_views.xml',
+        'views/payroll_views.xml',
+        'reports/payroll_report.xml',  # <--- Add this line here
+    ],
